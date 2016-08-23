@@ -16,18 +16,48 @@
 	
 	$cName = "";
 	$gId = 1;
-	$error = false;
+	$cMaxTeams = "";
+	$cTeamSize = "";
+	$error = 0;
 	
 	if (isset($_POST['cName'])) {
 		$cName = secureInput($database->getConnection(), $_POST['cName']);
-	} else {
-		$error = true;
+		$error++;
 	}
 	
 	if (isset($_POST['gId'])) {
 		$gId = secureInput($database->getConnection(), $_POST['gId']);
+		$error++;
+	}
+	
+	if (isset($_POST['cMaxTeams'])) {
+		$cMaxTeams = secureInput($database->getConnection(), $_POST['cMaxTeams']);
+		if (!is_numeric($cMaxTeams) && $cMaxTeams != "") {
+			$error = true;
+			echo "Max teams must be a number.<br>";
+		} else {
+			$error++;
+		}
+	}
+	
+	if (isset($_POST['cTeamSize'])) {
+		$cTeamSize = secureInput($database->getConnection(), $_POST['cTeamSize']);
+		if (!is_numeric($cTeamSize) && $cTeamSize != "") {
+			$error = true;
+			echo "Team size must be a number.<br>";
+		} else {
+			$error++;
+		}
+	}
+	
+	if ($error != 4) {
+		echo "<br>";
 	} else {
-		$error = true;
+		$newCompoSuccess = compo::createCompo($database->getConnection(), $cName, $gId, $cMaxTeams, $cTeamSize);
+		var_dump($newCompoSuccess);
+		if ($newCompoSuccess) {
+			header("Location: ../view/admin.php");
+		}
 	}
 	
 	echo 'Create new tournament:<br><br>
@@ -35,11 +65,11 @@
 		<table>
 		<tr><td>Name: </td><td><input type="text" name="cName" value="' . $cName  . '"></td></tr>
 		<tr><td>Game: </td><td><select name="gId">
-			<option value="1"' ($gId == 1) ? "selected" : "";'>League of Legends</option>
-			<option value="2">Counter-Strike: Global Offensive</option>
+			<option value="1"' . (($gId == 1) ? "selected" : "") . '>League of Legends</option>
+			<option value="2"' . (($gId == 2) ? "selected" : "") . '>Counter-Strike: Global Offensive</option>
 		</select></td></tr>
-		<tr><td>Max teams:</td><td><input type="text" name="cMaxTeams"></td></tr>
-		<tr><td>Team size:</td><td><input type="text" name="cTeamSize"></td></tr>
+		<tr><td>Max teams:</td><td><input type="text" name="cMaxTeams" value="' . $cMaxTeams . '"></td></tr>
+		<tr><td>Team size:</td><td><input type="text" name="cTeamSize" value="' . $cTeamSize . '"></td></tr>
 		<tr><td></td><td><input type="submit" value="Create"></td></tr>
 		</table></form>';
 
