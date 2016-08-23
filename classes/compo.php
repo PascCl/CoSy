@@ -56,6 +56,14 @@ class Compo {
 		return $result;
 	}
 	
+	public static function createCompo($conn, $cName, $gId, $cMaxTeams, $cTeamSize) {
+		$query = "INSERT INTO tblcompos (cName, gId, cMaxTeams, cTeamSize) VALUES ('$cName', '$gId', '$cMaxTeams', '$cTeamSize')";
+		$result = $conn->query($query);
+		//add logging
+		//
+		return $result;
+	}
+	
 	public static function getUserTeamInfo($conn, $userId, $compoId) {
 		$query = "SELECT tId FROM tblteammembers WHERE uId='$userId'";
 		$result = $conn->query($query);
