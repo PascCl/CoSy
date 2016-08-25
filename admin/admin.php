@@ -25,7 +25,7 @@
 		while ($row = $result->fetch_assoc()) {
 			$compo = new compo($database->getConnection(), $row['cId']);
 			$registrations = $compo->getCompoRegistrations() == 0 ? "Closed" : "Open";
-			echo "<tr><td><a href='compo.php?i=" . $row['cId'] . "'>" . $compo->getCompoName() . "</a></td>" .
+			echo "<tr><td><a href='admincompo.php?i=" . $row['cId'] . "'>" . $compo->getCompoName() . "</a></td>" .
 				"<td>" . $compo->getGameName($database->getConnection()) . "</td>" .
 				"<td>" . $compo->getCompoMaxTeams() . "</td>" .
 				"<td>" . $compo->getCompoTeamSize() . "</td>" .

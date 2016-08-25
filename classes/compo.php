@@ -28,6 +28,10 @@ class Compo {
 		return $this->cName;
 	}
 	
+	public function getGameId() {
+		return $this->gId;
+	}
+	
 	public function getGameName($conn) {
 		$query = "SELECT gName FROM tblgames WHERE gId = '$this->gId'";
 		$result = $conn->query($query);
@@ -51,6 +55,33 @@ class Compo {
 	
 	public function getTeams($conn) {
 		$query = "SELECT * FROM tblteams WHERE cId = '$this->cId'";
+		$result = $conn->query($query);
+		
+		return $result;
+	}
+	
+	public function updateCompo($conn, $cName, $gId, $cTeamSize, $cMaxTeams) {
+		
+		$this->cName = $cName;
+		$this->gId = $gId;
+		$this->cTeamSize = $cTeamSize;
+		$this->cMaxTeams = $cMaxTeams;
+		
+		$query = "UPDATE tblcompos
+					SET cName='$cName', gId='$gId', cTeamSize='$cTeamSize', cMaxTeams='$cMaxTeams'
+					WHERE cId='$this->cId'";
+		$result = $conn->query($query);
+		
+		return $result;
+	}
+	
+	public function setRegistrations($conn, $registrations) {
+		
+		$this->cRegistrations = $registrations;
+		
+		$query = "UPDATE tblcompos
+					SET cRegistrations='$registrations'
+					WHERE cId='$this->cId'";
 		$result = $conn->query($query);
 		
 		return $result;

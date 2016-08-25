@@ -12,7 +12,7 @@
 	} else {
 		if ($_SESSION['ip_address'] !== $_SERVER['REMOTE_ADDR'] || ($_SESSION['user_agent'] !== $_SERVER['HTTP_USER_AGENT'])) {
 			session_destroy();
-			header('Location: /index.php');
+			header('Location: view/index.php');
 			die();
 		}
 	}
@@ -53,7 +53,7 @@
 				$uName = secureInput($database->getConnection(), $_SESSION['uName']);
 				$uPowers[3] = secureInput ($database->getConnection(), $_SESSION['uPowers'][3]);
 				if ($uPowers[3]) {
-					echo '<li><a href="/view/admin.php">Admin</a></li>';
+					echo '<li><a href="/admin/admin.php">Admin</a></li>';
 				}
 				echo '<li><a href="/view/profile.php">' . $uName . '</a></li>';
 				echo '<li><a href="/view/logout.php">Logout</a></li>';
