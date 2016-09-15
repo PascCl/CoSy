@@ -11,6 +11,7 @@ class Controller
     
     public function view($view, $data = [])
     {
+        //add filecheck
         require_once '../app/views/' . $view . '.php';
     }
 }

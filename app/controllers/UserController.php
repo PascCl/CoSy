@@ -7,6 +7,10 @@ class UserController extends Controller
         echo "Index of User.";
     }
     
+    public function profile()
+    {
+        $this->view('user/profile', ['name' => $_SESSION['uName']]);
+    }
     
     public function login()
     {
@@ -38,7 +42,7 @@ class UserController extends Controller
                 $error = 'Wrong name or password.';
             }
 
-            $this->view('user/login', ['name' => htmlspecialchars($name), 'error' => $error]);
+            $this->view('user/login', ['name' => $name, 'error' => $error]);
         } else
         {
             $this->view('home/index');
@@ -54,4 +58,66 @@ class UserController extends Controller
             die();
         }
     }
+    
+    public function register()
+    {
+        $name = '';
+        $mail = '';
+
+        $nameError = '';
+        $mailError = '';
+        $passError = '';
+        $register = false;
+        
+        $error = false;
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+            if (!empty($_POST['name']))
+            {
+                $name = $_POST['name'];
+            } else
+            {
+                $error = true;
+                $nameError = "Name cannot be empty.";
+            }
+            
+            if (!empty($_POST['mail']))
+            {
+                $mail = $_POST['mail'];
+            } else
+            {
+                $error = true;
+                $mailError = "E-mail cannot be empty.";
+            }
+            
+            if (!empty($_POST['pass']))
+            {
+                $pass = $_POST['pass'];
+            } else
+            {
+                $error = true;
+                $passError = "Password cannot be empty.";
+            }
+            
+            if (!$error)
+            {
+                $user = $this->model('User'); //create user object
+                $database = Database::getInstance();
+                    
+                if ($user->checkRegister($database->getConnection(), $name, $mail, $pass))
+                {
+                    $register = true;
+                } else
+                {
+                    $nameError = 'Username or e-mail address already exists.';
+                }
+            }
+        }
+        
+        $this->view('user/register', ['register' => $register, 'name' => $name, 'mail' => $mail, 'nameError' => $nameError,
+            'mailError' => $mailError, 'passError' => $passError]);
+    }
 }
+
+?>

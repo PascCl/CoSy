@@ -2,7 +2,6 @@
     <div id='dolphinnav'>
         <ul>
             <li><a href="/home/index"><span>Home</span></a></li>
-            <li><a href="/user/index"><span>Users</span></a></li>
             <li><a href="/compo/index"><span>Tournaments</span></a></li>
             <?php
             if ($_SESSION['logged_in'] == false) {
