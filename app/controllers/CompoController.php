@@ -10,6 +10,22 @@ class CompoController extends Controller
         $this->view('compo/index', ['compos' => $compos]);
     }
     
+    public function compo($cId = '')
+    {
+        if ($cId == '')
+            header('Location: /compo/index');
+        
+        $database = Database::getInstance();
+        $compo = $this->model('Compo'); //create compo object
+        $team = $this->model('Team'); //create team object
+        $compo->construct($database->getConnection(), $cId);
+        //returns false if usr has no team, returns teamid if user has a team for this compo
+        $teamId = $team->checkIfUserHasTeam($database->getConnection(), $_SESSION['uId'], $cId);
+        if ($teamId != false)
+            $team->construct($database->getConnection(), $teamId);
+        $this->view('compo/compo', ['compo' => $compo, 'team' => $team]);
+    }
+    
     public function newTeam($cId)
     {
         $database = Database::getInstance();

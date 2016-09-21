@@ -2,9 +2,9 @@
 
 class Team
 {
-    private $tId;
+    private $tId = false;
     private $tName;
-    private $cId;   
+    private $cId;
     
     public function getTName()
     {
@@ -51,7 +51,7 @@ class Team
             return $error;
         }
         
-        if (!$this->checkUser($conn, $uId, $cId))
+        if ($this->checkIfUserHasTeam($conn, $uId, $cId) != false)
         {
             $error = "That person is already in a team for this competition.";
             return $error;
@@ -87,7 +87,8 @@ class Team
         return true;
     }
     
-    public function checkUser($conn, $uId, $cId)
+    //returns false if user has no team, returns teamId if user has a team
+    public function checkIfUserHasTeam($conn, $uId, $cId)
     {
         $query = $conn->prepare('SELECT tId FROM tblteams WHERE cId = ?');
         $cId = mysqli_real_escape_string($conn, $cId);
@@ -98,16 +99,17 @@ class Team
         $uId = mysqli_real_escape_string($conn, $uId);
         while ($row = $result->fetch_assoc())
         {
-            $query = $conn->prepare('SELECT mId FROM tblteammembers WHERE uId = ?');
+            $query = $conn->prepare('SELECT tId FROM tblteammembers WHERE uId = ?');
             $query->bind_param('s', $uId);
             $query->execute();
             $result = $query->get_result();
-            if (mysqli_num_rows($result) > 0)
+            if (mysqli_num_rows($result) == 1)
             {
-                return false;
+                $row = $result->fetch_assoc();
+                return $row['tId'];
             }
         }
-        return true;
+        return false;
     }
     
     public function addMember($conn, $uId, $uTeamPowers)
