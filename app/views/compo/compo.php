@@ -1,6 +1,8 @@
 <?php
 
 $cId = htmlspecialchars($data['compo']->getCId());
+if (!is_numeric($cId))
+    header('Location: /compo/index');
 $gId = htmlspecialchars($data['compo']->getGId());
 $cName = htmlspecialchars($data['compo']->getCName());
 $cTeamSize = htmlspecialchars($data['compo']->getCTeamSize());
@@ -19,6 +21,18 @@ echo "Compo: " . $cName . "<br>"
 if ($teamId == false)
     echo '<a href="/compo/newteam/' . $cId . '">Create Team</a>';
 else
-    echo $teamName;
+    echo 'Your team: <a href="/compo/team/' . $cId . '/' . $teamId . '">' . $teamName . '</a>';
+
+echo "<br><br>";
+
+echo "All teams:<br>";
+if (is_array($data['teamList']))
+{
+    foreach ($data['teamList'] as $team)
+    {
+        echo '<a href="/compo/team/' . $cId . '/' . $team["tId"] . '">' . $team['tName'] . "</a><br>";
+    }
+}
+
 
 ?>

@@ -5,7 +5,7 @@ class CompoController extends Controller
     public function index($name = '')
     {
         $database = Database::getInstance();
-        $compo = $this->model('Compo'); //create compo object
+        $compo = $this->model('Compo');
         $compos = $compo->listCompos($database->getConnection());
         $this->view('compo/index', ['compos' => $compos]);
     }
@@ -16,20 +16,20 @@ class CompoController extends Controller
             header('Location: /compo/index');
         
         $database = Database::getInstance();
-        $compo = $this->model('Compo'); //create compo object
-        $team = $this->model('Team'); //create team object
+        $compo = $this->model('Compo');
+        $team = $this->model('Team');
         $compo->construct($database->getConnection(), $cId);
-        //returns false if usr has no team, returns teamid if user has a team for this compo
         $teamId = $team->checkIfUserHasTeam($database->getConnection(), $_SESSION['uId'], $cId);
         if ($teamId != false)
             $team->construct($database->getConnection(), $teamId);
-        $this->view('compo/compo', ['compo' => $compo, 'team' => $team]);
+        $teamList = $team->getAllTeams($database->getConnection(), $cId);
+        $this->view('compo/compo', ['compo' => $compo, 'team' => $team, 'teamList' => $teamList]);
     }
     
     public function newTeam($cId)
     {
         $database = Database::getInstance();
-        $team = $this->model('Team'); //create team object
+        $team = $this->model('Team');
         
         $error = "";
         
@@ -53,11 +53,31 @@ class CompoController extends Controller
         $this->view('compo/newteam');
     }
     
-    public function team($cId)
+    public function team($cId = '', $teamId = '')
     {
+        if ($cId == '')
+            header('Location: /compo/index');
+        if ($teamId == '')
+            header('Location: /compo/compo/' . $cId);
+        
         $database = Database::getInstance();
-        $team = $this->model('Team'); //create team object
-        $team->construct($database->getConnection(), $_SESSION['uId']);
+        $team = $this->model('Team');
+        $teamMember = $this->model('TeamMember');
+        $compo = $this->model('Compo');
+
+        $team->construct($database->getConnection(), $teamId);
+        $compo->construct($database->getConnection(), $cId);
+        $teamMemberIds = $team->getTeamMembers($database->getConnection());
+        $teamMembers = "";
+        $count = 0;
+        foreach ($teamMemberIds as $teamMemberId)
+        {
+            $teamMembers[$count] = new TeamMember();
+            $teamMembers[$count]->construct($database->getConnection(), $teamId, $teamMemberId['uId']);
+            $count++;
+        }
+        $this->view('compo/team', ['compo' => $compo, 'team' => $team, 'teamMembers' => $teamMembers]);
+
     }
 
 }

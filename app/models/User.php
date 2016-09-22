@@ -5,7 +5,7 @@ class User
     private $uId;
     private $uName;
     private $uPass;
-    private $uPowers;
+    private $uPowers; //array of powers with value true/false: $uPowers[0] == true
     
     function getUId()
     {

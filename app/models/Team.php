@@ -126,6 +126,38 @@ class Team
         return false;
     }
     
+    public function getAllTeams($conn, $compoId)
+    {
+        $teams = "";
+        
+        $query = $conn->prepare('SELECT * FROM tblteams WHERE cId = ? ORDER BY tName');
+        $compoId = mysqli_real_escape_string($conn, $compoId);
+        $query->bind_param('s', $compoId);
+        $query->execute();
+        $result = $query->get_result();
+        foreach ($result as $row)
+        {
+            $teams[] = $row;
+        }
+        return $teams;
+    }
+    
+    public function getTeamMembers($conn)
+    {
+        $teamMembers = "";
+        
+        $query = $conn->prepare('SELECT * FROM tblteammembers WHERE tId = ?');
+        $teamId = mysqli_real_escape_string($conn, $this->getTId());
+        $query->bind_param('s', $teamId);
+        $query->execute();
+        $result = $query->get_result();
+        foreach ($result as $row)
+        {
+            $teamMembers[] = $row;
+        }
+        return $teamMembers;
+    }
+    
 }
 
 ?>
