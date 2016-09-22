@@ -118,6 +118,37 @@ class UserController extends Controller
         $this->view('user/register', ['register' => $register, 'name' => $name, 'mail' => $mail, 'nameError' => $nameError,
             'mailError' => $mailError, 'passError' => $passError]);
     }
+    
+    public function search($q = '')
+    {
+        $response = "";
+
+        if (strlen($q) > 0)
+        {
+            $database = Database::getInstance();
+            $conn = $database->getConnection();
+            $q = mysqli_real_escape_string($conn, $q);
+            $q = "%" . $q . "%";
+
+            $query = $conn->prepare('SELECT uName FROM tblusers WHERE uName LIKE ?');
+            $query->bind_param('s', $q);
+
+            if ($query->execute())
+            {
+                $result = $query->get_result();
+                if (mysqli_num_rows($result) > 0)
+                {
+                    $response = "_split88after99this_";
+                    while ($row = $result->fetch_assoc())
+                    {
+                        $response = $response . "<option value='" . $row['uName'] . "'></option>";
+                    }
+                }
+            }
+        }
+        
+        echo $response;
+    }
 }
 
 ?>

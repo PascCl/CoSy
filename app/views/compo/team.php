@@ -20,4 +20,40 @@ foreach ($teamMembers as $teamMember)
         echo ": member";
 }
 
+
+// Add Members //
+
+?>
+<script>
+function findUsers(str) {
+    if (str == "") {
+        document.getElementById("livesearch").innerHTML = "no suggestions";
+        xmlhttp.send();
+    } else {
+        if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+        } else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        var actualResponse = xmlhttp.responseText;
+                        actualResponse = actualResponse.split("_split88after99this_").pop();
+                        document.getElementById("livesearch").innerHTML = actualResponse;
+                }
+        };
+        xmlhttp.open("GET","/user/search/"+str,true);
+        xmlhttp.send();
+    }
+}
+</script>
+<?php
+
+echo "<br><br><form action='' method='post'>
+    <input type='text' name='username' oninput='findUsers(this.value)' list='livesearch'>
+    <datalist id='livesearch'></datalist>
+    <input type='submit' value='Add Member'>";
+
 ?>
